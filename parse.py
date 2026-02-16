@@ -1,6 +1,7 @@
 import requests
 import subprocess
 import sys
+import os
 
 question_name = sys.argv[1]
 url = "https://alfa-leetcode-api.onrender.com/select/raw?titleSlug=" + question_name
@@ -12,12 +13,24 @@ try:
 
     default_includes = "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n"
     question = data["question"]["content"]
+    #question.replace("\n", " \n ")
     code = data["question"]["codeSnippets"][0]["code"]
+    topic = data["question"]["topicTags"][0]["slug"]
 
-    with open(question_name + ".cpp", "w") as file:
+    if not os.path.exists(topic):
+        os.mkdir(topic)
+
+
+    if not os.path.exists(topic + "/" + question_name):
+        os.mkdir(topic + "/" + question_name)
+
+    with open("./" + topic + "/" + question_name + "/" + question_name + ".cpp", "w") as file:
         file.write(default_includes)
         file.write("\n")
         file.write(code)
+
+    with open("./" + topic + "/" +  question_name + "/" + question_name + ".html", "w") as file:
+        file.write(question)
 
     subprocess.run(["vim", question_name + ".cpp"])
 
@@ -25,3 +38,4 @@ except requests.exceptions.RequestException as e:
     print(f"An error occurred: {e}")
 except requests.exceptions.JSONDecodeError:
     print("Failed to decode JSON from the response.")
+
