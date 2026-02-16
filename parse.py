@@ -24,15 +24,16 @@ try:
     if not os.path.exists(topic + "/" + question_name):
         os.mkdir(topic + "/" + question_name)
 
-    with open("./" + topic + "/" + question_name + "/" + question_name + ".cpp", "w") as file:
+    file_name = "./" + topic + "/" + question_name + "/" + question_name
+    with open(file_name + ".cpp", "w") as file:
         file.write(default_includes)
         file.write("\n")
         file.write(code)
 
-    with open("./" + topic + "/" +  question_name + "/" + question_name + ".html", "w") as file:
+    with open(file_name + ".html", "w") as file:
         file.write(question)
 
-    subprocess.run(["vim", question_name + ".cpp"])
+    subprocess.run(["vim", file_name + ".cpp"])
 
 except requests.exceptions.RequestException as e:
     print(f"An error occurred: {e}")
