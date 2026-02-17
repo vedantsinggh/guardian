@@ -1,7 +1,5 @@
-#TODO: add testcase
-#TODO: add better question and notes taking ability
+#TODO: notes taking ability
 #TODO: make standalone installable application
-
 
 import requests
 import subprocess
@@ -22,10 +20,23 @@ try:
 
     default_includes = "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n"
     question = data["question"]["content"]
+    testcases = data["question"]["exampleTestcases"]
     #question.replace("\n", " \n ")
 
     code = data["question"]["codeSnippets"][0]["code"]
     topic = data["question"]["topicTags"][0]["slug"]
+    main_function = """\n\nint main(){
+/*
+Example testcases
+"""
+    end_function = """
+*/
+
+    Solution solution;
+    cout << \"Output: \\n\";
+    cout << solution.<enter function name>() << \"\\n\";
+}
+    """
 
     if not os.path.exists(topic):
         os.mkdir(topic)
@@ -38,8 +49,11 @@ try:
         file.write(default_includes)
         file.write("\n")
         file.write(code)
+        file.write(main_function)
+        file.write(testcases)
+        file.write(end_function)
 
-    with open(file_name + ".html", "w") as file:
+    with open("./" + topic + "/" + question_name + "/notes.html", "w") as file:
         file.write(question)
 
     subprocess.run(["vim", file_name + ".cpp"])
