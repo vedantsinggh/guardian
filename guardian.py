@@ -1,30 +1,51 @@
 #TODO: notes taking ability
 #TODO: make standalone installable application
+#TODO: question list and seach
+#TODO: daily problems
 
 import requests
 import subprocess
 import sys
 import os
 
+is_daily = False
 question_name = sys.argv[1]
+if question_name == "daily": is_daily = True
 url = "https://alfa-leetcode-api.onrender.com/select/raw?titleSlug=" + question_name
 
 try:
+    if is_daily:
+        url = "https://alfa-leetcode-api.onrender.com/daily/raw"
+
     response = requests.get(url)
     response.raise_for_status() 
     data = response.json()
 
-    if data["question"] is None or data is None:
+    if is_daily:
+        question_name = data["activeDailyCodingChallengeQuestion"]["question"]["titleSlug"]
+    elif data["question"] is None or data is None:
         print("Cant find the specified question!")
         exit(-1)
 
     default_includes = "#include <iostream>\n#include <vector>\n#include <algorithm>\nusing namespace std;\n"
-    question = data["question"]["content"]
-    testcases = data["question"]["exampleTestcases"]
+
+    question = None
+    testcases = None
+    code = None
+    topic = None
+    if is_daily:
+        question = data["activeDailyCodingChallengeQuestion"]["question"]["content"]
+        testcases = data["activeDailyCodingChallengeQuestion"]["question"]["exampleTestcases"]
+        code = data["activeDailyCodingChallengeQuestion"]["question"]["codeSnippets"][0]["code"]
+        topic = data["activeDailyCodingChallengeQuestion"]["question"]["topicTags"][0]["slug"]
+
+    else:
+        question = data["question"]["content"]
+        testcases = data["question"]["exampleTestcases"]
+        code = data["question"]["codeSnippets"][0]["code"]
+        topic = data["question"]["topicTags"][0]["slug"]
     #question.replace("\n", " \n ")
 
-    code = data["question"]["codeSnippets"][0]["code"]
-    topic = data["question"]["topicTags"][0]["slug"]
     main_function = """\n\nint main(){
 /*
 Example testcases
