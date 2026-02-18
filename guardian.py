@@ -1,12 +1,20 @@
 #TODO: notes taking ability
 #TODO: make standalone installable application
 #TODO: question list and seach
-#TODO: daily problems
 
 import requests
 import subprocess
 import sys
 import os
+import argparse
+
+parser = argparse.ArgumentParser(
+                    prog='Guardian',
+                    description='Bring leetcode to your terminal',
+                    epilog='Happy Leetcode!')
+
+parser.add_argument('question_slug/daily', help="question slug of leetcode question or daily for daily leetcode question")
+args = parser.parse_args()
 
 is_daily = False
 question_name = sys.argv[1]
